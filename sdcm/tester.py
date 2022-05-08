@@ -675,6 +675,12 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
             self.log.info('change RF of system_auth to %s', system_auth_rf)
             node = self.db_cluster.nodes[0]
             credentials = self.db_cluster.get_db_auth()
+            with node.remote_scylla_yaml() as scylla_yaml:
+                self.log.debug(
+                    "set_system_auth_rf: Using credentials %s, Current Authenticator: %s",
+                    credentials,
+                    scylla_yaml.authenticator
+                )
             username, password = credentials if credentials else (None, None)
             with self.db_cluster.cql_connection_patient(node, user=username, password=password) as session:
                 session.execute("ALTER KEYSPACE system_auth WITH replication = "
