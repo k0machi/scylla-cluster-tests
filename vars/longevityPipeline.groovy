@@ -143,9 +143,14 @@ def call(Map pipelineParams) {
             string(defaultValue: "${pipelineParams.get('gce_project', '')}",
                description: 'Gce project to use',
                name: 'gce_project')
+
             string(defaultValue: '',
                    description: 'Actual user requesting job start, for automated job builds (e.g. through Argus)',
                    name: 'requested_by_user')
+
+            string(defaultValue: 'false',
+                   description: 'Allow build #1 to go through instead of skipping it, in cases where parameters are ready (e.g. provided by Argus)',
+                   name: 'allow_first_build')
         }
         options {
             timestamps()
@@ -156,9 +161,14 @@ def call(Map pipelineParams) {
             stage("Preparation") {
                 // NOTE: this stage is a workaround for the following Jenkins bug:
                 // https://issues.jenkins-ci.org/browse/JENKINS-41929
-                when { expression { env.BUILD_NUMBER == '1' } }
+                when { expression { env.BUILD_NUMBER == '1' && params.allow_first_build == 'false' } }
                 steps {
                     script {
+                        println env
+                        println params
+                        println params.allow_first_build
+                        println env.allow_first_build
+                        println pipelineParams.get('allow_first_build')
                         if (currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause') != null) {
                             currentBuild.description = ('Aborted build#1 not having parameters loaded. \n'
                               + 'Build#2 is ready to run')
