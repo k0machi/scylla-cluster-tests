@@ -38,6 +38,7 @@ class ElasticRunReporter:
 
         index = self.INDEX_NAME if not index else index
         if not self._check_index(index):
+            LOGGER.warning("Index %s is missing, creating...", index)
             self._es.indices.create(index=self.INDEX_NAME)
         document = {
             "timestamp": datetime.datetime.utcnow(),
@@ -47,7 +48,7 @@ class ElasticRunReporter:
             "build_url": build_url,
             "build_number": build_number,
         }
-
+        LOGGER.info("Uploading document %s to elastic index %s", document, index)
         self._es.create(index=index, document=document, id=run_id, doc_type="sct_test_run_short_v1")
         return True
 

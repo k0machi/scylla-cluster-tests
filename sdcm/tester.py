@@ -2987,12 +2987,12 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
         with silence(parent=self, name='Cleaning up SSL config directory'):
             cleanup_ssl_config()
 
-        self.finalize_teardown()
-        self.argus_finalize_test_run()
         try:
             ElasticRunReporter().report_run(run_id=self.test_config.test_id(), status=self.get_test_status())
         except Exception:  # pylint: disable=broad-except  # noqa: BLE001
-            pass
+            self.log.error("Failed reporting to Elastic", exc_info=True)
+        self.finalize_teardown()
+        self.argus_finalize_test_run()
         self.argus_heartbeat_stop_signal.set()
 
         self.log.info('Test ID: {}'.format(self.test_config.test_id()))
