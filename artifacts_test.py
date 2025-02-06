@@ -30,6 +30,7 @@ from sdcm.utils.common import get_latest_scylla_release, ScyllaProduct
 from sdcm.utils.decorators import retrying
 from sdcm.utils.issues import SkipPerIssues
 from sdcm.utils.perftune_validator import PerftuneOutputChecker
+from sdcm.utils.validators.iotune import IOTuneValidator
 from utils.scylla_doctor import ScyllaDoctor
 
 STRESS_CMD: str = "/usr/bin/cassandra-stress"
@@ -324,6 +325,11 @@ class ArtifactsTest(ClusterTester):  # pylint: disable=too-many-public-methods
         if backend == "aws":
             with self.subTest("check ENA support"):
                 assert self.node.ena_support, "ENA support is not enabled"
+
+        if ("gce" in backend or "aws" in backend or "azure" in backend):
+            with self.subTest("check Scylla IO Params"):
+                validator = IOTuneValidator(self.node)
+                validator.validate()
 
         with self.subTest("verify write cache for NVMe devices"):
             self.verify_nvme_write_cache()
