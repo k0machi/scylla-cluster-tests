@@ -18,3 +18,5 @@ space_node_threshold: 64424
 
 validate_large_collections: true
 root_disk_size_runner: 150
+append_scylla_yaml:
+  enable_small_table_optimization_for_rbno: False
