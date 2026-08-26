@@ -585,7 +585,7 @@ A local directory of rpms to install a custom version on top of<br>the scylla in
 
 The port of scylla management
 
-**default:** branch-4.15
+**default:** branch-4.16
 
 **type:** str (appendable)
 
@@ -1350,7 +1350,7 @@ AMS AMI id to use for monitor node
 **type:** str (appendable)
 
 **backend overrides:**
-- `scylladb-monitor-4-15-0-rc0-2026-04-30t01-12-58z`: aws, aws-siren, k8s-local-kind-aws, k8s-eks
+- `scylladb-monitor-4-16-0-rc1-amd64-branch-4-16-2026-08-26t09-58-33z`: aws, aws-siren, k8s-local-kind-aws, k8s-eks
 
 
 ## **ami_id_db_cassandra** / SCT_AMI_ID_DB_CASSANDRA
